@@ -4,7 +4,7 @@
    WHY: Passes student information into the card and handles photo errors.
    ===================================================================== */
 
-import { Component, input } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Student } from '../../models/student.model';
 
@@ -17,10 +17,18 @@ import { Student } from '../../models/student.model';
 export class StudentCard {
   readonly student = input.required<Student>();
 
-  // Hide a photo only if its image fails to load.
-  protected onPhotoError(event: Event): void {
-    const image = event.target as HTMLImageElement;
-    image.onerror = null;
-    image.style.visibility = 'hidden';
+  // Remembers whether the student's photo failed to load.
+  private readonly imageFailed = signal(false);
+
+  // Uses the placeholder when the original photo fails.
+  protected readonly photoSrc = computed(() =>
+    this.imageFailed()
+      ? 'images/placeholder-portrait.svg'
+      : this.student().photo,
+  );
+
+  // Switches to the placeholder when the photo cannot load.
+  protected onImageError(): void {
+    this.imageFailed.set(true);
   }
 }

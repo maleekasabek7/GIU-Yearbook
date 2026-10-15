@@ -11,10 +11,10 @@
 >
   <img
     class="card__photo"
-    [src]="student().photo"
+    [src]="photoSrc()"
     [alt]="'Portrait of ' + student().name"
     loading="lazy"
-    (error)="onPhotoError($event)"
+    (error)="onImageError()"
   />
 
   <div class="card__body">
